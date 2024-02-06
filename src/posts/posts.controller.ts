@@ -1,4 +1,4 @@
-import { Controller, Get, NotFoundException, Param } from '@nestjs/common';
+import { Body, Controller, Get, NotFoundException, Param, Post } from '@nestjs/common';
 import { PostsService } from './posts.service';
 
 interface PostModel{
@@ -74,6 +74,33 @@ export class PostsController {
       return post
     }
   }
+
+  @Post()
+  postPosts(
+    @Body('author') author : string,
+    @Body('title') title : string,
+    @Body('content') content : string
+  ){
+    const post = {
+      id : posts[posts.length -1].id +1,
+      author,
+      title,
+      content,
+      likeCount:0,
+      commentConut:0
+    }
+
+    // 기존 포스트 리스트에 새롭게 만든 포스트들을 추가
+    posts = [
+      ...posts,
+      post,
+    ];
+
+    // 결과값으로는 리소스를 최대한 줄이기 위해 생성된 포스트만 리턴값으로 제공
+    return post
+
+  }
+
 
 
 
