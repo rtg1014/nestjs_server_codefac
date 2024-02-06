@@ -1,4 +1,4 @@
-import { Body, Controller, Get, NotFoundException, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, NotFoundException, Param, Patch, Post, Put } from '@nestjs/common';
 import { PostsService } from './posts.service';
 
 interface PostModel{
@@ -69,7 +69,7 @@ export class PostsController {
     const post = posts.find((post)=>post.id === +id)
 
     if(!post){
-      throw new NotFoundException
+      throw new NotFoundException()
     }else{
       return post
     }
@@ -99,6 +99,37 @@ export class PostsController {
     // 결과값으로는 리소스를 최대한 줄이기 위해 생성된 포스트만 리턴값으로 제공
     return post
 
+  }
+  
+  @Put(':id')
+  putPost(
+    @Param('id') id:string,
+    @Body('author') author? : string,
+    @Body('title') title? : string,
+    @Body('content') content? : string
+  ){
+    const post = posts.find((post)=>post.id === +id)
+
+    if(!post){
+      throw new NotFoundException()
+    }
+
+    if(author){
+      post.author = author
+    }
+
+    if(title){
+      post.title = title
+    }
+
+    if(content){
+      post.content = content
+    }
+
+    // map 으로 id 체크 후 맞으면 변경
+    posts = posts.map((prePost)=>prePost.id === +id ? post : prePost)
+
+    return post;
   }
 
 
